@@ -778,13 +778,13 @@ class NeedMoMatchaBot:
                                     print(f"      📝 Message changed: {previous_status.get('message', 'N/A') if isinstance(previous_status, dict) else 'N/A'} → {message}")
                                 
                                 product_config = self.config['available_products'][product_id]
-                        await self.send_notification(
-                            chat_id,
-                            product_config['name'], 
-                            is_in_stock, 
-                            message, 
-                            product_config['url']
-                        )
+                                await self.send_notification(
+                                    chat_id,
+                                    product_config['name'], 
+                                    is_in_stock, 
+                                    message, 
+                                    product_config['url']
+                                )
                             
                         # Update stored status for this user
                         user_stock_status[product_id] = {
