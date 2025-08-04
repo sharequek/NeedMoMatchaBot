@@ -533,17 +533,53 @@ class NeedMoMatchaBot:
                         "❌ *Missing Product ID*\n\n"
                         "Please specify which product to add.\n\n"
                         "*Example:* `/add sayaka_40g`\n"
+                        "*To add all products:* `/add all`\n"
                         "*To see all products:* `/list`"
                     )
                     return
                 
                 product_id = parts[1]
+                
+                # Handle "all" command
+                if product_id.lower() == 'all':
+                    all_products = list(self.config['available_products'].keys())
+                    user_products = self.users[chat_id].get('monitored_products', [])
+                    
+                    # Add all products that aren't already being monitored
+                    added_products = []
+                    for product in all_products:
+                        if product not in user_products:
+                            user_products.append(product)
+                            added_products.append(product)
+                    
+                    if added_products:
+                        self.update_user_preferences(chat_id, user_products)
+                        await self.send_message(
+                            chat_id, 
+                            f"✅ *Added all products to monitoring*\n\n"
+                            f"Added **{len(added_products)}** new product(s).\n"
+                            f"You're now monitoring **{len(user_products)}** total product(s).\n\n"
+                            f"Use `/status` to see all your monitored products.\n"
+                            f"Use `/list` to see all available products."
+                        )
+                    else:
+                        await self.send_message(
+                            chat_id, 
+                            "ℹ️ *Already Monitoring All*\n\n"
+                            f"You're already monitoring all **{len(user_products)}** available products.\n\n"
+                            f"Use `/status` to see all your monitored products.\n"
+                            f"Use `/list` to see all available products."
+                        )
+                    return
+                
+                # Handle individual product
                 if product_id not in self.config['available_products']:
                     await self.send_message(
                         chat_id, 
                         f"❌ *Product Not Found*\n\n"
                         f"`{product_id}` is not a valid product ID.\n\n"
                         f"*To see all available products:* `/list`\n"
+                        f"*To add all products:* `/add all`\n"
                         f"*Example valid IDs:* `sayaka_40g`, `ummon_20g`, `kan_30g`"
                     )
                     return
@@ -742,30 +778,30 @@ class NeedMoMatchaBot:
                                     print(f"      📝 Message changed: {previous_status.get('message', 'N/A') if isinstance(previous_status, dict) else 'N/A'} → {message}")
                                 
                                 product_config = self.config['available_products'][product_id]
-                                await self.send_notification(
-                                    chat_id,
-                                    product_config['name'], 
-                                    is_in_stock, 
-                                    message, 
-                                    product_config['url']
-                                )
+                        await self.send_notification(
+                            chat_id,
+                            product_config['name'], 
+                            is_in_stock, 
+                            message, 
+                            product_config['url']
+                        )
                             
-                            # Update stored status for this user
-                            user_stock_status[product_id] = {
-                                'in_stock': is_in_stock,
-                                'message': message
-                            }
-                        else:
-                            # Check if this is a persistent error (product removed/changed)
-                            if "not found" in message.lower() or "404" in message or "removed" in message.lower():
-                                # Only notify once per day to avoid spam
-                                last_error_time = user_stock_status.get(f"{product_id}_error_time", 0)
-                                current_time = datetime.now().timestamp()
-                                
-                                if current_time - last_error_time > 86400:  # 24 hours
-                                    product_config = self.config['available_products'][product_id]
-                                    await self.notify_product_error(chat_id, product_config['name'], message)
-                                    user_stock_status[f"{product_id}_error_time"] = current_time
+                        # Update stored status for this user
+                        user_stock_status[product_id] = {
+                            'in_stock': is_in_stock,
+                            'message': message
+                        }
+                    else:
+                        # Check if this is a persistent error (product removed/changed)
+                        if "not found" in message.lower() or "404" in message or "removed" in message.lower():
+                            # Only notify once per day to avoid spam
+                            last_error_time = user_stock_status.get(f"{product_id}_error_time", 0)
+                            current_time = datetime.now().timestamp()
+                            
+                            if current_time - last_error_time > 86400:  # 24 hours
+                                product_config = self.config['available_products'][product_id]
+                                await self.notify_product_error(chat_id, product_config['name'], message)
+                                user_stock_status[f"{product_id}_error_time"] = current_time
                     
                     # Save user's stock status
                     self.save_user_stock_status(chat_id, user_stock_status)
@@ -867,7 +903,7 @@ async def main():
 
 if __name__ == "__main__":
     try:
-        asyncio.run(main())
+        asyncio.run(main()) 
     except KeyboardInterrupt:
         print("🛑 Bot stopped by user")
     except Exception as e:
