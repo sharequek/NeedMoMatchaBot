@@ -16,7 +16,7 @@ git push origin main
 
 # Pull and restart on Pi
 Write-Host "Updating Pi..." -ForegroundColor Yellow
-$sshResult = ssh ${PiUser}@${PiIP} "cd ~/NeedMoMatchaBot && git pull origin main && pip install -r requirements.txt && sudo systemctl restart matcha-bot && echo 'SUCCESS: Git deployment complete!'"
+$sshResult = ssh ${PiUser}@${PiIP} "cd ~/NeedMoMatchaBot && git config pull.rebase false && git pull origin main && pip install -r requirements.txt && sudo systemctl restart matcha-bot && echo 'SUCCESS: Git deployment complete!'"
 
 # Check if the SSH command was successful by looking for success message
 if ($sshResult -like "*SUCCESS: Git deployment complete!*") {
