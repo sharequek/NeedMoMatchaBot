@@ -1,0 +1,36 @@
+available_products:
+  horai_20g:
+    name: Horai - 20g
+    url: https://ippodotea.com/collections/matcha/products/horai-no-mukashi
+  ikuyo_100g:
+    name: Ikuyo - 100g
+    url: https://ippodotea.com/collections/matcha/products/ikuyo-100
+  ikuyo_30g:
+    name: Ikuyo - 30g
+    url: https://ippodotea.com/collections/matcha/products/ikuyo
+  kan_30g:
+    name: Kan - 30g
+    url: https://ippodotea.com/collections/matcha/products/kan
+  sayaka_100g:
+    name: Sayaka - 100g
+    url: https://ippodotea.com/collections/matcha/products/sayaka-100g
+  sayaka_40g:
+    name: Sayaka - 40g
+    url: https://ippodotea.com/collections/matcha/products/sayaka-no-mukashi
+  ummon_20g:
+    name: Ummon - 20g
+    url: https://ippodotea.com/collections/matcha/products/ummon-no-mukashi-20g
+  ummon_40g:
+    name: Ummon - 40g
+    url: https://ippodotea.com/collections/matcha/products/ummon-no-mukashi-40g
+  wakaki_40g:
+    name: Wakaki - 40g
+    url: https://ippodotea.com/collections/matcha/products/wakaki-shiro
+monitoring:
+  check_interval: 15
+  timeout: 10
+telegram:
+  token: 8330506978:AAHkELd8XwhOOZM6TqC4qJc6kEEJNl0TgoQ
+development:
+  enabled: false
+  dev_user_id: '8319100894'
