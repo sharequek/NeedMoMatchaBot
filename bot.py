@@ -726,7 +726,7 @@ class NeedMoMatchaBot:
                     if product_id in self.config['available_products']:
                         product_config = self.config['available_products'][product_id]
                         
-                        is_in_stock, message = self.check_product_stock(product_id, product_config)
+                        is_in_stock, message = await asyncio.get_event_loop().run_in_executor(None, self.check_product_stock, product_id, product_config)
                         checked_products[product_id] = (is_in_stock, message)
                         
                         if is_in_stock is None:
@@ -864,7 +864,7 @@ async def main():
         offset = 0
         while True:
             try:
-                updates = await bot.bot.get_updates(offset=offset, timeout=30)
+                updates = await bot.bot.get_updates(offset=offset, timeout=10)
                 for update in updates:
                     if update.message and update.message.text:
                         await handle_message(update, bot)
