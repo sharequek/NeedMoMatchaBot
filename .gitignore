@@ -71,5 +71,7 @@ tmp/
 *.backup
 *.old
 
-# Configuration files with sensitive data (optional - uncomment if you want to exclude config.yaml)
-# config.yaml 
+# Bot-specific data files (user preferences and stock status)
+users/
+stock_status/
+bot_states.json 

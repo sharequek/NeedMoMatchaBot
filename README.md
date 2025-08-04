@@ -18,8 +18,8 @@ A Telegram bot that monitors Ippodo Tea matcha products ([ippodotea.com](https:/
    ```
 
 2. **Configure the bot:**
-   - Update `config.yaml` with your Telegram token
-   - Set your user ID in the development section for testing
+   - Update `config.yaml` with your Telegram token and user ID
+   - Update `deploy.ps1` with your Pi's IP address
 
 3. **Start the bot:**
    ```bash
@@ -82,10 +82,22 @@ python dev_mode.py status
 
 **On Raspberry Pi:**
 ```bash
+# Set up SSH key for GitHub (one-time)
+ssh-keygen -t ed25519 -C "your-email@example.com"
+cat ~/.ssh/id_ed25519.pub  # Add this to GitHub SSH keys
+
+# Clone and set up
 git clone git@github.com:sharequek/need-mo-matcha-bot.git
 cd need-mo-matcha-bot
 pip install -r requirements.txt
-python bot.py
+sudo cp matcha-bot.service /etc/systemd/system/
+sudo systemctl enable matcha-bot
+sudo systemctl start matcha-bot
+```
+
+**Deploy from Desktop:**
+```powershell
+.\deploy.ps1
 ```
 
 ## Troubleshooting
