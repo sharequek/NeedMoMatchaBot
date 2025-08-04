@@ -5,8 +5,8 @@ After=network.target
 [Service]
 Type=simple
 User=pi
-WorkingDirectory=/home/pi/need-mo-matcha-bot
-ExecStart=/usr/bin/python3 /home/pi/need-mo-matcha-bot/bot.py
+WorkingDirectory=/home/pi/NeedMoMatchaBot
+ExecStart=/usr/bin/python3 /home/pi/NeedMoMatchaBot/bot.py
 Restart=always
 RestartSec=10
 StandardOutput=journal
