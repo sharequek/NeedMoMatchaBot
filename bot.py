@@ -771,7 +771,7 @@ class NeedMoMatchaBot:
                                 message_changed = True
                             
                             # Send notification if status or message changed
-                            if status_changed or message_changed:
+                            if status_changed:  # Only send notification if stock status changed
                                 if status_changed:
                                     print(f"      🔄 Status changed: {previous_status.get('in_stock') if isinstance(previous_status, dict) else previous_status} → {is_in_stock}")
                                 if message_changed:
