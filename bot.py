@@ -786,22 +786,25 @@ class NeedMoMatchaBot:
                                     product_config['url']
                                 )
                             
-                        # Update stored status for this user
-                        user_stock_status[product_id] = {
-                            'in_stock': is_in_stock,
-                            'message': message
-                        }
-                    else:
-                        # Check if this is a persistent error (product removed/changed)
-                        if "not found" in message.lower() or "404" in message or "removed" in message.lower():
-                            # Only notify once per day to avoid spam
-                            last_error_time = user_stock_status.get(f"{product_id}_error_time", 0)
-                            current_time = datetime.now().timestamp()
+                            # Update stored status for this user (only for valid results)
+                            user_stock_status[product_id] = {
+                                'in_stock': is_in_stock,
+                                'message': message
+                            }
+                        else:
+                            # Handle error case (is_in_stock is None)
+                            print(f"      ⚠️ Error checking {product_id}: {message}")
                             
-                            if current_time - last_error_time > 86400:  # 24 hours
-                                product_config = self.config['available_products'][product_id]
-                                await self.notify_product_error(chat_id, product_config['name'], message)
-                                user_stock_status[f"{product_id}_error_time"] = current_time
+                            # Check if this is a persistent error (product removed/changed)
+                            if "not found" in message.lower() or "404" in message or "removed" in message.lower():
+                                # Only notify once per day to avoid spam
+                                last_error_time = user_stock_status.get(f"{product_id}_error_time", 0)
+                                current_time = datetime.now().timestamp()
+                                
+                                if current_time - last_error_time > 86400:  # 24 hours
+                                    product_config = self.config['available_products'][product_id]
+                                    await self.notify_product_error(chat_id, product_config['name'], message)
+                                    user_stock_status[f"{product_id}_error_time"] = current_time
                     
                     # Save user's stock status
                     self.save_user_stock_status(chat_id, user_stock_status)
