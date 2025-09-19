@@ -30,7 +30,7 @@ monitoring:
   check_interval: 15
   timeout: 10
 telegram:
-  token: 8330506978:AAHkELd8XwhOOZM6TqC4qJc6kEEJNl0TgoQ
+  # Token is now loaded from environment variable TELEGRAM_BOT_TOKEN
 development:
   enabled: false
-  dev_user_id: '8319100894'
+  # dev_user_id is now loaded from environment variable DEV_USER_ID

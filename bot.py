@@ -7,15 +7,24 @@ from telegram import Bot, Update
 import yaml
 from datetime import datetime
 import os
+from dotenv import load_dotenv
 
 class NeedMoMatchaBot:
     def __init__(self, config_path="config.yaml"):
+        # Load environment variables
+        load_dotenv()
+        
         # Load configuration
         with open(config_path, 'r') as f:
             self.config = yaml.safe_load(f)
         
+        # Get Telegram token from environment variable
+        telegram_token = os.getenv('TELEGRAM_BOT_TOKEN')
+        if not telegram_token:
+            raise ValueError("TELEGRAM_BOT_TOKEN environment variable is required")
+        
         # Initialize bot
-        self.bot = Bot(token=self.config['telegram']['token'])
+        self.bot = Bot(token=telegram_token)
         
         # Create directories if they don't exist
         os.makedirs('users', exist_ok=True)
@@ -26,7 +35,7 @@ class NeedMoMatchaBot:
         
         # Development mode - only send to specific user (you)
         self.dev_mode = self.config.get('development', {}).get('enabled', False)
-        self.dev_user_id = self.config.get('development', {}).get('dev_user_id', None)
+        self.dev_user_id = os.getenv('DEV_USER_ID') or self.config.get('development', {}).get('dev_user_id', None)
         
         # Track bot state per user to prevent duplicate notifications
         self.user_bot_states = self.load_bot_states()  # 'maintenance' or 'resumed' per user
